@@ -19,8 +19,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
     GROQ_API_KEY: Optional[str] = None
-    OLLAMA_API_URL: str = "http://ollama:11434"
-    OLLAMA_MODEL: str = "llama2"
+    OLLAMA_API_URL: Optional[str] = None
+    OLLAMA_MODEL: Optional[str] = None
 
     # Application
     ENVIRONMENT: str = "development"
