@@ -4,8 +4,10 @@ import axios, {
   AxiosResponse,
 } from "axios"
 
+// Use relative URL or environment variable if specified
 const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8000"
+  process.env.REACT_APP_API_URL ||
+  `${window.location.protocol}//${window.location.hostname}:3581`
 
 export const apiClient = axios.create({
   baseURL: API_URL,

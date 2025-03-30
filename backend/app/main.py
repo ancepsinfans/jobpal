@@ -1,4 +1,5 @@
 from app.api.v1.endpoints import applications, auth
+from app.core.config import settings
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +14,9 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:1235"],  # Frontend URL
+    allow_origins=(
+        ["*"] if settings.DEBUG else ["http://localhost:1235"]
+    ),  # Allow all origins in debug mode
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
