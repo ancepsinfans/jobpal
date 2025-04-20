@@ -19,12 +19,40 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
-.env
-.venv
-env/
+
+# Virtual Environment
 venv/
+env/
 ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Local development
+.env
+.env.local
+
+# Uploads
+uploads/
+
+# Test cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Node
 node_modules/
@@ -48,10 +76,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Logs
-logs
-*.log
-
 # Coverage reports
 htmlcov/
 .tox/
@@ -62,10 +86,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-
-# Database
-*.sqlite3
-*.db
 
 # Build output
 dist/
