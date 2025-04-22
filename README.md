@@ -1,72 +1,67 @@
-# JobPal
+# JobPal - Job Application Management System
 
-JobPal is an open-source job search management application that helps users track their job search process, manage applications, and create tailored resumes and cover letters.
+A Dockerized application for managing job applications, built with React and Flask.
 
-## Features
+## Project Structure
 
-- 🔍 Job search aggregation and tracking
-- 📝 Application status management
-- 📄 Resume creation and management
-- ✉️ Cover letter creation and customization
-- 🤖 AI-powered cover letter tailoring (optional)
-  - OpenAI integration
-  - Anthropic integration
-  - Groq integration
-  - Local Ollama model support
+```
+jobpal/
+├── frontend/         # React frontend application
+├── backend/          # Flask backend application
+├── docker/           # Docker-related configurations
+└── docs/            # Project documentation
+```
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+- Node.js (for local frontend development)
+- Python 3.8+ (for local backend development)
 
 ## Getting Started
 
-### Prerequisites
+1. Clone the repository
+2. Copy the environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+3. Start the application:
+   ```bash
+   docker-compose up --build
+   ```
 
-- Docker and Docker Compose
-- (Optional) API keys for AI services
+The application should be available at:
 
-### Quick Start
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/jobpal.git
-cd jobpal
-```
-
-2. Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-3. Configure your environment variables in `.env`
-
-4. Start the application:
-
-```bash
-docker-compose up -d
-```
-
-The application will be available at:
-
-- Frontend: `http://localhost:1235`
-- Backend API: `http://localhost:3581`
+- Frontend: http://localhost:5137
+- Backend: http://localhost:7315
+- Database: localhost:5432
 
 ## Development
 
-### Backend
+### Frontend Development
 
-The backend is built with FastAPI and provides a RESTful API for the frontend.
+- Navigate to the frontend directory
+- Install dependencies: `npm install`
+- Start development server: `npm start`
 
-### Frontend
+### Backend Development
 
-The frontend is built with React and TypeScript, providing a modern and responsive user interface.
+- Navigate to the backend directory
+- Create a virtual environment: `python -m venv venv`
+- Activate the virtual environment: `source venv/bin/activate` (Unix) or `venv\Scripts\activate` (Windows)
+- Install dependencies: `pip install -r requirements.txt`
+- Start the development server: `flask run`
 
-## Contributing
+## Features
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details.
+- Job application management
+- File upload for resumes and cover letters
+- Status tracking
+- Date notifications
+- CSV export
+- Filtering and search capabilities
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Security
-
-Please read our [Security Policy](SECURITY.md) for details on reporting security vulnerabilities.
+MIT

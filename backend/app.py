@@ -1,17 +1,28 @@
 from flask import Flask
-from flask_jwt_extended import JWTManager
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-jwt = JWTManager()
+from backend.extensions import db, jwt, migrate
+from backend.routes import auth_bp, jobs_bp
 
 
 def create_app():
     """Create and configure the Flask application"""
     app = Flask(__name__)
+
+    # Configure CORS
+    CORS(
+        app,
+        resources={
+            r"/api/*": {
+                "origins": ["http://localhost:5137", "http://localhost:5173"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "expose_headers": ["Authorization"],
+                "supports_credentials": True,
+                "allow_credentials": True,
+            }
+        },
+    )
 
     # Configure database
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///jobpal"
@@ -21,6 +32,9 @@ def create_app():
     # Configure JWT
     app.config["JWT_SECRET_KEY"] = "dev"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400  # 1 day in seconds
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+    app.config["JWT_COOKIE_SECURE"] = False  # Set to True in production
 
     # Configure file uploads
     app.config["UPLOAD_FOLDER"] = "uploads"
@@ -35,9 +49,7 @@ def create_app():
     from backend.models import File, Job, User
 
     # Register blueprints
-    from backend.routes import auth_bp, jobs_bp
-
-    app.register_blueprint(jobs_bp, url_prefix="/api")
+    app.register_blueprint(jobs_bp, url_prefix="/api/jobs")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     @app.route("/health", methods=["GET"])

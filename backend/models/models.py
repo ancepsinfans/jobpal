@@ -18,22 +18,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from backend.extensions import db
-from backend.models.enums import JobSource
-
-
-class ApplicationStatus(enum.Enum):
-    NOT_YET_APPLIED = "not_yet_applied"
-    TEST_TASK = "test_task"
-    SCREENING_CALL = "screening_call"
-    INTERVIEW = "interview"
-
-
-class JobSource(enum.Enum):
-    LINKEDIN = "linkedin"
-    INDEED = "indeed"
-    COMPANY_WEBSITE = "company_website"
-    REFERRAL = "referral"
-    OTHER = "other"
+from backend.models.enums import ApplicationStatus, JobSource
 
 
 class User(db.Model):
@@ -43,7 +28,7 @@ class User(db.Model):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(120), unique=True, nullable=False)
-    password_hash = Column(String(128), nullable=False)
+    password_hash = Column(String(255), nullable=False)
     first_name = Column(String(100))
     last_name = Column(String(100))
     is_active = Column(Boolean, default=True)
@@ -53,12 +38,23 @@ class User(db.Model):
     # Relationships
     jobs = relationship("Job", back_populates="user", cascade="all, delete-orphan")
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if not self.email:
+            raise ValueError("Email is required")
+
     def set_password(self, password: str) -> None:
         """Set the user's password"""
+        if not password:
+            raise ValueError("Password cannot be empty")
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long")
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password: str) -> bool:
         """Check if the provided password matches the user's password"""
+        if not password:
+            return False
         return check_password_hash(self.password_hash, password)
 
 

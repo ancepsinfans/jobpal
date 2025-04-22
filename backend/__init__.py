@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 from backend.extensions import db, jwt, migrate
 from backend.routes import auth_bp, jobs_bp
@@ -26,6 +27,18 @@ def create_app(test_config=None):
 
     if test_config is not None:
         app.config.update(test_config)
+
+    # Configure CORS
+    CORS(
+        app,
+        resources={
+            r"/api/*": {
+                "origins": ["http://localhost:5137", "http://localhost:5173"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+            }
+        },
+    )
 
     # Initialize extensions
     db.init_app(app)

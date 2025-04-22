@@ -7,7 +7,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
 
 from backend.extensions import db
-from backend.models.models import ApplicationStatus, File, Job, JobSource, User
+from backend.models.enums import ApplicationStatus, JobSource
+from backend.models.models import File, Job, User
 
 bp = Blueprint("jobs", __name__)
 
@@ -86,13 +87,23 @@ def create_job():
     """Create a new job"""
     try:
         data = request.get_json()
+        print("Received data:", data)  # Debug log
         user_id = int(get_jwt_identity())
+
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found. Please log in again."}), 401
 
         # Validate required fields
         required_fields = ["company_name", "role_title", "application_status"]
         for field in required_fields:
             if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # Debug log the enum values
+        print("Application status:", data["application_status"])
+        print("Source:", data.get("source"))
 
         # Create job
         job = Job(
@@ -157,10 +168,12 @@ def create_job():
         return jsonify({"error": str(e)}), 400
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({"error": "Database error occurred"}), 500
+        print(f"Database error: {str(e)}")  # Log the error
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 
-@bp.route("/<int:job_id>", methods=["PUT"])
+@bp.route("/<int:job_id>", methods=["PUT", "PATCH"])
+@bp.route("/<int:job_id>/", methods=["PUT", "PATCH"])
 @jwt_required()
 def update_job(job_id):
     """Update a job"""
@@ -241,10 +254,12 @@ def update_job(job_id):
         return jsonify({"error": str(e)}), 400
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({"error": "Database error occurred"}), 500
+        print(f"Database error: {str(e)}")  # Add debug logging
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 
 @bp.route("/<int:job_id>", methods=["DELETE"])
+@bp.route("/<int:job_id>/", methods=["DELETE"])
 @jwt_required()
 def delete_job(job_id):
     """Delete a job"""
@@ -305,3 +320,51 @@ def upload_file(job_id):
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": "Database error occurred"}), 500
+
+
+@bp.route("/<int:job_id>", methods=["GET"])
+@bp.route("/<int:job_id>/", methods=["GET"])
+@jwt_required()
+def get_job(job_id):
+    """Get a single job by ID"""
+    try:
+        user_id = get_jwt_identity()
+        job = Job.query.filter_by(id=job_id, user_id=user_id).first_or_404()
+
+        return (
+            jsonify(
+                {
+                    "id": job.id,
+                    "company_name": job.company_name,
+                    "role_title": job.role_title,
+                    "vacancy_link": job.vacancy_link,
+                    "vacancy_text": job.vacancy_text,
+                    "application_status": job.application_status.value,
+                    "source": job.source.value if job.source else None,
+                    "date_applied": (
+                        job.date_applied.isoformat() if job.date_applied else None
+                    ),
+                    "next_milestone_date": (
+                        job.next_milestone_date.isoformat()
+                        if job.next_milestone_date
+                        else None
+                    ),
+                    "salary_min": job.salary_min,
+                    "salary_max": job.salary_max,
+                    "telegram_notification_sent": job.telegram_notification_sent,
+                    "created_at": (
+                        job.created_at.isoformat() if job.created_at else None
+                    ),
+                    "updated_at": (
+                        job.updated_at.isoformat() if job.updated_at else None
+                    ),
+                }
+            ),
+            200,
+        )
+
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except SQLAlchemyError as e:
+        print(f"Database error: {str(e)}")  # Add debug logging
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
