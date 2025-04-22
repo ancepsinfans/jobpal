@@ -1,10 +1,9 @@
 import os
 
+from extensions import db, jwt, migrate
 from flask import Flask
 from flask_cors import CORS
-
-from .extensions import db, jwt, migrate
-from .routes import auth_bp, jobs_bp
+from routes import auth_bp, jobs_bp
 
 
 def create_app():
@@ -58,7 +57,7 @@ def create_app():
     jwt.init_app(app)
 
     # Import models after db is initialized
-    from .models import File, Job, User
+    from models import File, Job, User
 
     # Register blueprints
     app.register_blueprint(jobs_bp, url_prefix="/api/jobs")
