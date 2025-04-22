@@ -7,6 +7,9 @@ services:
       args:
         - VITE_API_URL=${VITE_API_URL}
         - VITE_API_URL_REMOTE=${VITE_API_URL_REMOTE}
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_API_URL_REMOTE=${VITE_API_URL_REMOTE}
     ports:
       - "5137:80"
     depends_on:
