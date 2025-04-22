@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { API_BASE_URL } from '../utils/auth';
 
 const statusColors = {
     not_yet_applied: 'default',
@@ -44,7 +45,7 @@ function JobList() {
 
     const fetchJobs = async () => {
         try {
-            const response = await fetch('http://localhost:7315/api/jobs/', {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -60,7 +61,7 @@ function JobList() {
         if (!window.confirm('Are you sure you want to delete this job?')) return;
 
         try {
-            await fetch(`http://localhost:7315/api/jobs/${id}/`, {
+            await fetch(`${API_BASE_URL}/api/jobs/${id}/`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,

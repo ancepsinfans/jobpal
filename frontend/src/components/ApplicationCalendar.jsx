@@ -4,6 +4,7 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { format, parseISO, startOfYear } from 'date-fns';
 import React from 'react';
+import { API_BASE_URL } from '../utils/auth';
 
 const ApplicationCalendar = () => {
     const [calendarData, setCalendarData] = useState([]);
@@ -16,7 +17,7 @@ const ApplicationCalendar = () => {
     const fetchApplicationData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:7315/api/jobs/', {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

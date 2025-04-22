@@ -16,7 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useUser } from '../hooks/useUser';
-import { isTokenExpired } from '../utils/auth';
+import { isTokenExpired, API_BASE_URL } from '../utils/auth';
 
 function Layout({ children }) {
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ function Layout({ children }) {
 
     const handleExport = async () => {
         try {
-            const response = await fetch('http://localhost:7315/api/jobs/export', {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/export`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
