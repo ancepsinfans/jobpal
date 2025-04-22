@@ -22,7 +22,6 @@ def create_app():
                 "allow_headers": ["Content-Type", "Authorization"],
                 "expose_headers": ["Authorization"],
                 "supports_credentials": True,
-                "allow_credentials": True,
             }
         },
     )
