@@ -9,11 +9,12 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and env file
 COPY . .
 
-# Set environment variable for production build
+# Set environment variables for production build
 ENV NODE_ENV=production
+ENV VITE_API_URL=http://10.0.0.9:7315
 
 # Build the application
 RUN npm run build
