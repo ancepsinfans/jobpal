@@ -18,7 +18,9 @@ export const isTokenExpired = (token) => {
 // Base URL for API calls
 export const API_BASE_URL = (() => {
     const hostname = window.location.hostname;
-    if (hostname === 'jobs.homezeug.us') {
+    // Check if current hostname matches the remote domain from env
+    const remoteUrl = new URL(import.meta.env.VITE_API_URL_REMOTE || '');
+    if (hostname === remoteUrl.hostname) {
         return import.meta.env.VITE_API_URL_REMOTE;
     }
     return import.meta.env.VITE_API_URL;

@@ -15,9 +15,7 @@ def create_app():
         app,
         resources={
             r"/*": {
-                "origins": os.environ.get(
-                    "CORS_ORIGINS", "http://10.0.0.9:5137,https://jobs.homezeug.us"
-                ).split(","),
+                "origins": os.environ.get("CORS_ORIGINS").split(","),
                 "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
                 "expose_headers": ["Authorization"],
