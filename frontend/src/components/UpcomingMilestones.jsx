@@ -19,7 +19,7 @@ import { alpha } from '@mui/material/styles';
 
 const UpcomingMilestones = () => {
     const [upcomingJobs, setUpcomingJobs] = useState([]);
-    const [daysRange, setDaysRange] = useState(3);
+    const [daysRange, setDaysRange] = useState(13);
     const navigate = useNavigate();
 
     useEffect(() => {
