@@ -41,6 +41,8 @@ ENV/
 # Local development
 .env
 .env.local
+.env.development
+.env.production
 
 # Uploads
 uploads/

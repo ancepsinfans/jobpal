@@ -19,10 +19,11 @@ services:
       - "7315:7315"
     volumes:
       - uploads:/app/uploads
+    env_file:
+      - .env.production
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/jobpal
-      # Add other environment variables from your .env file here
     depends_on:
       - db
     restart: unless-stopped
