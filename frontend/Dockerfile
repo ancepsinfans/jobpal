@@ -12,6 +12,9 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Set environment variable for production build
+ENV NODE_ENV=production
+
 # Build the application
 RUN npm run build
 
@@ -27,4 +30,5 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Expose port
 EXPOSE 80
 
+# Ensure nginx runs in the foreground
 CMD ["nginx", "-g", "daemon off;"] 
