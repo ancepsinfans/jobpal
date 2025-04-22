@@ -1,8 +1,9 @@
+import os
+
+from extensions import db, jwt, migrate
 from flask import Flask
 from flask_cors import CORS
-
-from backend.extensions import db, jwt, migrate
-from backend.routes import auth_bp, jobs_bp
+from routes import auth_bp, jobs_bp
 
 
 def create_app():
@@ -14,7 +15,9 @@ def create_app():
         app,
         resources={
             r"/api/*": {
-                "origins": ["http://localhost:5137", "http://localhost:5173"],
+                "origins": os.environ.get(
+                    "CORS_ORIGINS", "http://localhost:5173,http://10.0.0.9:5173"
+                ).split(","),
                 "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
                 "expose_headers": ["Authorization"],
@@ -25,20 +28,28 @@ def create_app():
     )
 
     # Configure database
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///jobpal"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+        "DATABASE_URL", "postgresql:///jobpal"
+    )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SECRET_KEY"] = "dev"
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev")
 
     # Configure JWT
-    app.config["JWT_SECRET_KEY"] = "dev"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400  # 1 day in seconds
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "dev")
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = int(
+        os.environ.get("JWT_ACCESS_TOKEN_EXPIRES", 86400)
+    )  # 1 day in seconds
     app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
     app.config["JWT_COOKIE_CSRF_PROTECT"] = False
-    app.config["JWT_COOKIE_SECURE"] = False  # Set to True in production
+    app.config["JWT_COOKIE_SECURE"] = (
+        os.environ.get("ENV", "development") == "production"
+    )
 
     # Configure file uploads
-    app.config["UPLOAD_FOLDER"] = "uploads"
-    app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
+    app.config["UPLOAD_FOLDER"] = os.environ.get("UPLOAD_FOLDER", "uploads")
+    app.config["MAX_CONTENT_LENGTH"] = int(
+        os.environ.get("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
+    )  # 16MB max file size
 
     # Initialize extensions
     db.init_app(app)
@@ -46,7 +57,7 @@ def create_app():
     jwt.init_app(app)
 
     # Import models after db is initialized
-    from backend.models import File, Job, User
+    from models import File, Job, User
 
     # Register blueprints
     app.register_blueprint(jobs_bp, url_prefix="/api/jobs")
@@ -63,4 +74,8 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=7315, debug=True)
+    app.run(
+        host=os.environ.get("HOST", "0.0.0.0"),
+        port=int(os.environ.get("PORT", 7315)),
+        debug=os.environ.get("ENV", "development") == "development",
+    )
