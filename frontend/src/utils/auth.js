@@ -15,11 +15,14 @@ export const isTokenExpired = (token) => {
     }
 };
 
+// Base URL for API calls
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7315';
+
 // Function to refresh token
 export const refreshToken = async () => {
     try {
         const currentToken = localStorage.getItem('token');
-        const response = await fetch('http://localhost:7315/api/auth/refresh', {
+        const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${currentToken}`,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 
 export const useUser = () => {
     const [user, setUser] = useState(null);
@@ -9,7 +9,7 @@ export const useUser = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await fetchWithAuth('http://localhost:7315/api/auth/me');
+                const response = await fetchWithAuth(`${API_BASE_URL}/api/auth/me`);
                 if (response.ok) {
                     const userData = await response.json();
                     setUser(userData);

@@ -9,6 +9,7 @@ import {
     Link,
     Alert,
 } from '@mui/material';
+import { API_BASE_URL } from '../utils/auth';
 
 function Register() {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ function Register() {
         }
 
         try {
-            const response = await fetch("http://localhost:7315/api/auth/register", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
