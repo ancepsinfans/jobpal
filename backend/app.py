@@ -14,9 +14,9 @@ def create_app():
     CORS(
         app,
         resources={
-            r"/api/*": {
+            r"/*": {
                 "origins": os.environ.get(
-                    "CORS_ORIGINS", "http://localhost:5173,http://10.0.0.9:5173"
+                    "CORS_ORIGINS", "http://10.0.0.9:5137,https://jobs.homezeug.us"
                 ).split(","),
                 "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
@@ -75,7 +75,7 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(
-        host=os.environ.get("HOST", "0.0.0.0"),
+        host="0.0.0.0",  # Bind to all network interfaces
         port=int(os.environ.get("PORT", 7315)),
         debug=os.environ.get("ENV", "development") == "development",
     )
