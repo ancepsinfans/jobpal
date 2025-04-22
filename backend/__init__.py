@@ -1,8 +1,12 @@
+import os
+
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 
-from backend.extensions import db, jwt, migrate
-from backend.routes import auth_bp, jobs_bp
+from backend.extensions import db
+from backend.routes import auth, files, jobs
 
 
 def create_app(test_config=None):
@@ -16,34 +20,38 @@ def create_app(test_config=None):
     """
     app = Flask(__name__)
 
-    # Configure the Flask app
-    app.config.from_mapping(
-        SECRET_KEY="dev",
-        SQLALCHEMY_DATABASE_URI="postgresql:///jobpal",
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        JWT_SECRET_KEY="dev",
-        UPLOAD_FOLDER="uploads",
-    )
-
-    if test_config is not None:
-        app.config.update(test_config)
-
     # Configure CORS
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": ["http://localhost:5137", "http://localhost:5173"],
-                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                "origins": os.getenv("CORS_ORIGINS", "http://10.0.0.9:5173").split(","),
+                "supports_credentials": True,
                 "allow_headers": ["Content-Type", "Authorization"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             }
         },
     )
 
+    # Configure database
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+        "DATABASE_URL", "postgresql://postgres:postgres@db:5432/jobpal"
+    )
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    # Configure JWT
+    app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY")
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = (
+        int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 1440)) * 60
+    )
+
+    if test_config is not None:
+        app.config.update(test_config)
+
     # Initialize extensions
     db.init_app(app)
-    jwt.init_app(app)
-    migrate.init_app(app, db)
+    jwt = JWTManager(app)
+    migrate = Migrate(app, db)
 
     # Create all tables
     with app.app_context():
@@ -53,8 +61,9 @@ def create_app(test_config=None):
         db.create_all()
 
     # Register blueprints
-    app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    app.register_blueprint(jobs_bp, url_prefix="/api/jobs")
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(jobs.bp)
+    app.register_blueprint(files.bp)
 
     @app.route("/health")
     def health_check():

@@ -68,6 +68,7 @@ def login():
     try:
         data = request.get_json()
         logger.debug(f"Login attempt with email: {data.get('email')}")
+        logger.debug(f"Request headers: {dict(request.headers)}")
 
         if not data or not data.get("email") or not data.get("password"):
             logger.warning("Missing email or password in login request")
@@ -90,15 +91,24 @@ def login():
         access_token = create_access_token(identity=str(user.id))
         logger.debug("Login successful, token created")
 
-        response = jsonify({"access_token": access_token})
-        response.set_cookie(
-            "access_token_cookie",
-            access_token,
-            httponly=True,
-            secure=False,  # Set to True in production
-            samesite="Lax",
-            max_age=86400,  # 1 day in seconds
+        response = jsonify(
+            {
+                "access_token": access_token,
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                },
+            }
         )
+
+        # Add CORS headers
+        origin = request.headers.get("Origin")
+        if origin:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+
         return response, 200
 
     except Exception as e:
