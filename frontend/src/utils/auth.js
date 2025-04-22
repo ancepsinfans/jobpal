@@ -16,7 +16,7 @@ export const isTokenExpired = (token) => {
 };
 
 // Base URL for API calls
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7315';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://10.0.0.9:7315';
 
 // Function to refresh token
 export const refreshToken = async () => {
