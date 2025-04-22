@@ -18,6 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Install the backend package in development mode
+WORKDIR /app
 RUN pip install -e .
 
 # Create uploads directory
@@ -26,6 +27,7 @@ RUN mkdir -p uploads && chmod 777 uploads
 # Create entrypoint script
 RUN echo '#!/bin/sh\n\
 cd /app\n\
+export PYTHONPATH=/app\n\
 gunicorn --bind 0.0.0.0:7315 --workers 4 --timeout 120 "backend:create_app()"' > /app/start.sh \
     && chmod +x /app/start.sh
 
