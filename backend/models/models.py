@@ -2,6 +2,7 @@ import enum
 from datetime import datetime
 from typing import Optional
 
+from extensions import db
 from sqlalchemy import (
     Boolean,
     Column,
@@ -17,8 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from backend.extensions import db
-from backend.models.enums import ApplicationStatus, JobSource
+from .enums import ApplicationStatus, JobSource
 
 
 class User(db.Model):

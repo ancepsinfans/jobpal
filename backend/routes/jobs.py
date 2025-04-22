@@ -1,14 +1,10 @@
-import os
-from datetime import datetime
-
-from flask import Blueprint, current_app, jsonify, request
+from extensions import db
+from flask import Blueprint, current_app, jsonify, request, send_file
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from models.enums import ApplicationStatus, JobSource
+from models.models import File, Job, User
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
-
-from backend.extensions import db
-from backend.models.enums import ApplicationStatus, JobSource
-from backend.models.models import File, Job, User
 
 bp = Blueprint("jobs", __name__)
 

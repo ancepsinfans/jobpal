@@ -1,13 +1,12 @@
 import logging
 from datetime import timedelta
 
+from extensions import db
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from models import User
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from backend.extensions import db
-from backend.models.models import User
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
