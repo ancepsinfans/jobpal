@@ -1,4 +1,4 @@
-from backend.models.enums import ApplicationStatus, JobSource
-from backend.models.models import File, Job, User
+from .enums import ApplicationStatus, JobSource
+from .models import File, Job, User
 
-__all__ = ["User", "Job", "File", "ApplicationStatus", "JobSource"]
+__all__ = ["ApplicationStatus", "JobSource", "User", "Job", "File"]
