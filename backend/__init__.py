@@ -24,11 +24,13 @@ def create_app(test_config=None):
     CORS(
         app,
         resources={
-            r"/api/*": {
-                "origins": os.getenv("CORS_ORIGINS", "http://10.0.0.9:5173").split(","),
-                "supports_credentials": True,
-                "allow_headers": ["Content-Type", "Authorization"],
+            r"/*": {
+                "origins": os.getenv(
+                    "CORS_ORIGINS", "http://10.0.0.9:5173,https://jobs.homezeug.us"
+                ).split(","),
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "supports_credentials": True,
             }
         },
     )

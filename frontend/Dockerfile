@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine as build
+FROM node:18-alpine as build
 
 WORKDIR /app
 
@@ -7,14 +7,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Copy source code and env file
 COPY . .
 
-# Set environment variables for production build
-ENV NODE_ENV=production
-ENV VITE_API_URL=http://10.0.0.9:7315
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
+ARG VITE_API_URL_REMOTE
+ENV VITE_API_URL_REMOTE=${VITE_API_URL_REMOTE}
 
 # Build the application
 RUN npm run build

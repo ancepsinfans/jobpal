@@ -16,7 +16,13 @@ export const isTokenExpired = (token) => {
 };
 
 // Base URL for API calls
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://10.0.0.9:7315';
+export const API_BASE_URL = (() => {
+    const hostname = window.location.hostname;
+    if (hostname === 'jobs.homezeug.us') {
+        return import.meta.env.VITE_API_URL_REMOTE;
+    }
+    return import.meta.env.VITE_API_URL;
+})();
 
 // Function to refresh token
 export const refreshToken = async () => {
