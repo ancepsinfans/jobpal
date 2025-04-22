@@ -14,7 +14,7 @@ import {
 import { format, parseISO, isWithinInterval, addDays } from 'date-fns';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useNavigate } from 'react-router-dom';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 import { alpha } from '@mui/material/styles';
 
 const UpcomingMilestones = () => {
@@ -28,7 +28,7 @@ const UpcomingMilestones = () => {
 
     const fetchUpcomingJobs = async () => {
         try {
-            const response = await fetchWithAuth('http://localhost:7315/api/jobs/');
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/`);
 
             if (response.ok) {
                 const jobs = await response.json();

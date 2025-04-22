@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 import { differenceInDays, parseISO } from 'date-fns';
 
 function RejectionMetrics({ metrics }) {
@@ -52,7 +52,7 @@ function RejectionMetrics({ metrics }) {
 
     const fetchExtendedMetrics = async () => {
         try {
-            const response = await fetchWithAuth('http://localhost:7315/api/jobs/');
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/`);
             if (response.ok) {
                 const jobs = await response.json();
                 const totalApplications = jobs.length;
@@ -103,7 +103,7 @@ function RejectionMetrics({ metrics }) {
                 if (jobsToUpdate.length > 0) {
                     jobsToUpdate.forEach(async (job) => {
                         try {
-                            await fetchWithAuth(`http://localhost:7315/api/jobs/${job.id}`, {
+                            await fetchWithAuth(`${API_BASE_URL}/api/jobs/${job.id}`, {
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',

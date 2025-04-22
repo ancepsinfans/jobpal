@@ -34,7 +34,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 import { alpha, useTheme } from '@mui/material/styles';
 
 const statusColors = {
@@ -76,7 +76,7 @@ function Jobs() {
 
     const fetchJobs = async () => {
         try {
-            const response = await fetchWithAuth('http://localhost:7315/api/jobs/');
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -96,7 +96,7 @@ function Jobs() {
         }
 
         try {
-            const response = await fetchWithAuth(`http://localhost:7315/api/jobs/${jobId}/`, {
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/${jobId}/`, {
                 method: 'DELETE',
             });
 
@@ -119,7 +119,7 @@ function Jobs() {
 
     const handleSaveEdit = async (jobId, { field, value }) => {
         try {
-            const response = await fetchWithAuth(`http://localhost:7315/api/jobs/${jobId}/`, {
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/${jobId}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

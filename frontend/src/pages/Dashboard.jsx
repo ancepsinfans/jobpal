@@ -7,7 +7,7 @@ import ApplicationCalendar from '../components/ApplicationCalendar';
 import OverdueItems from '../components/OverdueItems';
 import RejectionMetrics from '../components/RejectionMetrics';
 import UpcomingMilestones from '../components/UpcomingMilestones';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 import { differenceInDays, parseISO } from 'date-fns';
 
 function Home() {
@@ -25,7 +25,7 @@ function Home() {
 
     const fetchRejectionData = async () => {
         try {
-            const response = await fetchWithAuth('http://localhost:7315/api/jobs/');
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/`);
 
             if (response.ok) {
                 const jobs = await response.json();

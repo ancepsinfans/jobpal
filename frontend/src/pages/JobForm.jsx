@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { fetchWithAuth } from '../utils/auth';
+import { fetchWithAuth, API_BASE_URL } from '../utils/auth';
 
 const JOB_SOURCES = [
     { value: 'linkedin', label: 'LinkedIn' },
@@ -60,7 +60,7 @@ function JobForm() {
 
     const fetchJob = async () => {
         try {
-            const response = await fetchWithAuth(`http://localhost:7315/api/jobs/${id}/`);
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/jobs/${id}/`);
 
             if (response.ok) {
                 const jobData = await response.json();
@@ -109,8 +109,8 @@ function JobForm() {
             };
 
             const url = id
-                ? `http://localhost:7315/api/jobs/${id}/`
-                : 'http://localhost:7315/api/jobs/';
+                ? `${API_BASE_URL}/api/jobs/${id}/`
+                : `${API_BASE_URL}/api/jobs/`;
 
             const response = await fetchWithAuth(url, {
                 method: id ? 'PUT' : 'POST',
